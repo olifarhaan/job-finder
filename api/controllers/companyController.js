@@ -1,15 +1,16 @@
-import Company from "../models/companyModel";
-import { errorHandler } from "../utils/errors";
+import Company from "../models/companyModel.js";
+import { errorHandler } from "../utils/errors.js";
 
 export const createRole = async (req, res, next) => {
     try {
-      const { companyId, roleName, minCTC, maxCTC, location } = req.body;
+      const { roleName, minCTC, maxCTC, location } = req.body;
   
-      if (!companyId || !roleName || !minCTC || !maxCTC || !location) {
+      if (!roleName || !minCTC || !maxCTC || !location) {
         return next(errorHandler(400, 'All fields are required'));
       }
-  
-      const company = await Company.findById(companyId);
+      
+      const companyId= req.user.id;
+      const company = await Company.findOne({user:companyId});
   
       if (!company) {
         return next(errorHandler(404, 'Company not found'));
